@@ -36,7 +36,7 @@ export default function AuthButton(): JSX.Element {
     return (
       <button
         onClick={signIn}
-        className="inline-flex items-center justify-center gap-2 rounded-xl border
+        className="inline-flex items-center justify-center gap-2 rounded-xl border cursor-pointer
          border-[rgba(18,18,26,0.2)] bg-white px-[1.1rem] py-[0.6rem] text-[0.95rem]
           font-semibold transition-[transform,opacity] duration-150 ease-in-out disabled:cursor-not-allowed disabled:opacity-70"
         disabled={isSigningIn}
@@ -53,7 +53,7 @@ export default function AuthButton(): JSX.Element {
       <p className="text-lg">Welcome, {user.user_metadata.full_name}</p>
       <button
         onClick={logout}
-        className="text-red-500 underline font-sans italic"
+        className="text-red-500 underline font-sans italic cursor-pointer"
       >
         Logout
       </button>
