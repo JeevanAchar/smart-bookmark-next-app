@@ -10,3 +10,5 @@ export const UNABLE_TO_UPDATE_BOOKMARK_ERROR_MESSAGE =
 export const UPDATED_BOOKMARK_SUCCESS_MESSAGE = "Bookmark updated.";
 export const ADDED_BOOKMARK_SUCCESS_MESSAGE = "Bookmark added.";
 export const UNABLE_TO_DELETE_BOOKMARK_ERROR_MESSAGE = "Unable to delete bookmark."
+export const UNABLE_TO_ADD_BOOKMARK_ERROR_MESSAGE = "Please add a valid title and URL.";
+export const INVALID_URL_ERROR_MESSAGE ="Please enter a valid URL."

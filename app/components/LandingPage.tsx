@@ -27,7 +27,7 @@ export default function LandingPage(): JSX.Element {
           <div className="flex max-w-88 flex-col gap-[0.4rem] rounded-2xl border border-border bg-white/75 px-[1.2rem] py-4 shadow-[0_18px_45px_rgba(18,18,26,0.08)]">
             <span className="font-semibold">Start saving in seconds</span>
             <span className="text-[0.95rem] text-ink-muted">
-              Sign in to create your first collection.
+              Sign in to create your first bookmark.
             </span>
           </div>
         </div>

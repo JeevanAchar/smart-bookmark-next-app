@@ -33,6 +33,7 @@ export default function DashBoard(): JSX.Element {
   const [isSaving, setIsSaving] = useState(false);
   const [form, setForm] = useState<BookmarkInput>({ title: "", url: "" });
   const [note, setNote] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const realtimeActiveRef = useRef(false);
   const realtimeChannelRef = useRef<RealtimeChannel | null>(null);
   const realtimeStartRef = useRef(false);
@@ -53,6 +54,17 @@ export default function DashBoard(): JSX.Element {
       bookmarks.find((bookmark) => bookmark.id === selectedBookmarkId) ?? null,
     [bookmarks, selectedBookmarkId],
   );
+
+  const filteredBookmarks = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return bookmarks;
+
+    return bookmarks.filter((bookmark) => {
+      const title = bookmark.title.toLowerCase();
+      const url = bookmark.url.toLowerCase();
+      return title.includes(query) || url.includes(query);
+    });
+  }, [bookmarks, searchQuery]);
 
   useEffect(() => {
     setFormFromBookmark(selectedBookmark);
@@ -238,6 +250,8 @@ export default function DashBoard(): JSX.Element {
 
   const handleSave = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const urlRegex =
+      /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}(\/[\w\-._~:/?#[\]@!$&'()*+,;=.]*?)?$/;
 
     if (!user) return;
 
@@ -246,6 +260,13 @@ export default function DashBoard(): JSX.Element {
 
     if (!form.title.trim() || !form.url.trim()) {
       setNote(Constants.CommonConstant.REUQIRED_FIELDS_ERROR_MESSAGE);
+      setIsSaving(false);
+      return;
+    }
+
+    if (!urlRegex.test(form.url.trim())) {
+      globalThis.alert(Constants.CommonConstant.INVALID_URL_ERROR_MESSAGE);
+      setNote(Constants.CommonConstant.UNABLE_TO_ADD_BOOKMARK_ERROR_MESSAGE);
       setIsSaving(false);
       return;
     }
@@ -349,10 +370,10 @@ export default function DashBoard(): JSX.Element {
           </div>
           <div>
             <p className="m-0 text-[0.75rem] uppercase tracking-[0.2em] text-ink-muted">
-              Signed in
+              Signed in as
             </p>
             <p className="m-0 text-[0.95rem] font-semibold break-all">
-              {user.email}
+              {user.user_metadata.name}
             </p>
           </div>
         </div>
@@ -365,6 +386,15 @@ export default function DashBoard(): JSX.Element {
             + New
           </button>
         </div>
+        <label className="flex flex-col gap-2 text-[0.85rem] font-semibold text-ink">
+          <span className="sr-only">Search bookmarks</span>
+          <input
+            className="rounded-[0.8rem] border border-[rgba(18,18,26,0.2)] bg-white px-[0.9rem] py-[0.7rem] text-[0.95rem] text-ink"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder="Search by title or URL"
+          />
+        </label>
         {isLoading ? (
           <p className="m-0 text-[0.95rem] leading-[1.6] text-ink-muted">
             Loading your library…
@@ -376,9 +406,16 @@ export default function DashBoard(): JSX.Element {
               Add your first bookmark to get started.
             </span>
           </div>
+        ) : filteredBookmarks.length === 0 ? (
+          <div className="text-[0.95rem] leading-[1.6] text-ink-muted">
+            <p className="m-0">No matches for your search.</p>
+            <span className="mt-[0.4rem] block">
+              Try a different title or URL.
+            </span>
+          </div>
         ) : (
           <div className="flex flex-col gap-[0.6rem]">
-            {bookmarks.map((bookmark) => (
+            {filteredBookmarks.map((bookmark) => (
               <button
                 key={bookmark.id}
                 className={`flex cursor-pointer flex-col gap-[0.2rem] rounded-[0.9rem] border px-[0.9rem] py-3 text-left transition-[border-color,background] duration-200 ${

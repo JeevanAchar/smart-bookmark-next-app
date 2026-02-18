@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Lato } from "next/font/google";
 import "./globals.css";
-import { createClient } from "@/lib/supabase/server";
+import { createServerComponentClient } from "@/lib/supabase/server";
 import { UserProvider } from "@/app/context/UserContext";
 
 const lato = Lato({
@@ -21,7 +21,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient();
+  const supabase = await createServerComponentClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
